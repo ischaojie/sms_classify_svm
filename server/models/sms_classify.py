@@ -27,6 +27,11 @@ from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn import svm
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import NearestCentroid
+from sklearn.tree import DecisionTreeClassifier
+
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 logging.basicConfig(level=logging.INFO)
 
@@ -108,13 +113,34 @@ def train():
 
     # 训练
     logging.info('start train model...')
+
+    # 支持向量机
     clf = svm.SVC(gamma='scale')
-    model = clf.fit(X_train, y_train)  
+    model = clf.fit(X_train, y_train)
+
+    # 高斯贝叶斯
+    # model = MultinomialNB().fit(X_train, y_train)
+
+    # 最近邻算法
+    # model = NearestCentroid().fit(X_train, y_train)
+
+    # 决策树
+    # model = DecisionTreeClassifier().fit(X_train, y_train)
 
     predicted = model.predict(X_test)
     logging.info("accuracy: {}".format(np.mean(predicted == y_test)))
     # 0.9480286738351255
+    # accuracy
+    acc = accuracy_score(y_test, predicted)
+    logging.info("accuracy: {}".format(acc))
 
+    # 混淆矩阵
+    cm = confusion_matrix(y_test, predicted)
+    logging.info("confusion_matrix: {}".format(cm))
+
+    report = classification_report(y_test, predicted)
+    print("classification report: ")
+    print(report)
     # 保存训练模型    
     model_file = os.path.join(base_path, "sms_classify_v1.0.pkl")
     with open(model_file, 'wb') as f:
@@ -180,7 +206,7 @@ def predict(data):
 
 
 if __name__ == "__main__":
-    # train()
+    train()
     email = "Go until jurong point, crazy.. Available only in bugis n great world la e buffet..."
     result = predict(email)
     print(result)

@@ -13,7 +13,7 @@ def index():
     return jsonify('sms classify api, request </predict> get result.')
 
 
-# 垃圾邮件检测(英文版)
+# 垃圾邮件检测
 @app.route('/predict', methods=['GET', 'POST'])
 def sms_classify():
     email = request.args.get('email', '')
